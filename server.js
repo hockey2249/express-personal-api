@@ -85,13 +85,13 @@ app.get('/api/profile', function index(req, res) {
 // get all weed shops 
 
 app.get('/api/shops', function(req, res) {
-    
-    db.Shop.find().populate('name')
-    .exec(function(err, shops){
+   db.Shop.find(function(err, shops){
       if (err) { return console.log("index error: " + err); }
       res.json(shops);
   });
 });
+
+
 
 /**********
  * SERVER *
