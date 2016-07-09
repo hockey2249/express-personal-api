@@ -10,8 +10,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 /************
  * DATABASE *
  ************/
+// var mongoose = require("mongoose");
+// mongoose.connect( process.env.MONGOLAB_URI ||
+//                   process.env.MONGOHQ_URL ||
+//           "mongodb://localhost/personal-api");
 
-// var db = require('./models');
+var db = require('./models/shop.js');
+var Shop = require('./models/shop.js');
+  seedShops = require('./seed/shops');
 
 /**********
  * ROUTES *
@@ -23,9 +29,17 @@ app.use(express.static('public'));
 
 /*
  * HTML Endpoints
- */
+//  */
 
-app.get('/', function homepage(req, res) {
+app.get('/shops', function homepage(req, res) {
+    
+    Shop.find(function (err, allShops){
+      if (err){
+        res.status(500).json({ error: err.message });
+      } else {
+        res.json({ shops: allShops});
+      }
+    });
   res.sendFile(__dirname + '/views/index.html');
 });
 
