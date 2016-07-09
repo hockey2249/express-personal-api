@@ -6,27 +6,41 @@ var express = require('express'),
 // and populate the req.body object
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(function(req, res, next) {
+     res.header("Access-Control-Allow-Origin", "*");
+     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+     next();
+ });
 
 /************
  * DATABASE *
  ************/
-// connect to db models
-// var db = require('./models/');
 
-// generate a new express app and call it 'app'
-var app = express();
+var db = require('./models/'); 
 
-// serve static files in public
-app.use(express.static('public'));
+var profile = [
+  {
+  name: 'Kyle Gibons',
+  github_link: 'https://github.com/hockey2249/express-personal-api',
+  github_profile_image: '',
+  current_city: 'Denver, CO',
+  pets: [
+    {name: 'Simba', type: 'Dog', breed: 'Golden Retriver'},
+ ],
+  family_members: [
+      {name: 'Kayla', relationship: 'Sister'},
+      {name: 'James', relationship: 'Dad'},
+      {name: 'Kathy', relationship: 'Mother'}
+]
+}
+];
 
-// body parser config to accept our datatypes
-app.use(bodyParser.urlencoded({ extended: true }));
 /**********
  * ROUTES *
  **********/
-
 // Serve static files from the `/public` directory:
 // i.e. `/images`, `/scripts`, `/styles`
+
 app.use(express.static('public'));
 
 /*
@@ -37,16 +51,6 @@ app.get('/', function (req, res) {
   res.sendFile('views/index.html' , { root : __dirname});
 });
 
-app.get('/api/shops', function(req, res) {
-    
-    db.Shop.find().populate('name')
-    .exec(function(err, shops){
-      if (err) { return console.log("index error: " + err); }
-      res.json(shops);
-  });
-});
-
-
 /*
  * JSON API Endpoints
  */
@@ -56,13 +60,36 @@ app.get('/api', function api_index(req, res) {
   res.json({
     woops_i_has_forgot_to_document_all_my_endpoints: true, // CHANGE ME ;)
     message: "Welcome to my personal api! Here's what you need to know!",
-    documentation_url: "https://github.com/hockey2249/express-personal-api", // CHANGE ME
-    base_url: "https://immense-springs-36820.herokuapp.com/api", // CHANGE ME
+    documentation_url: "https://github.com/hockey2249/express-personal-api", 
+    base_url: "https://immense-springs-36820.herokuapp.com/api", 
     endpoints: [
       {method: "GET", path: "/api", description: "Describes all available endpoints"},
-      {method: "GET", path: "/api/profile", description: "List to all of the dispensary near you"}, // CHANGE ME
-      {method: "POST", path: "/api/shops", description: "E.g. Create a new campsite"} // CHANGE ME
+      {method: "GET", path: "/api/profile", description: "Data about me"}, 
+      {method: "POST", path: "/api/shops", description: "Find a local Dispensary"}, 
+
+      {method: "POST", path: "/api/shops", description: "Add 90s One Hit Wonders"},
+      {method: "GET", path: "/api/shops/:id", description: "Get one song"},
+      {method: "DELETE", path: "/api/shops/:id", description: "Delete one song"}
     ]
+  });
+});
+
+
+//get all profile info
+app.get('/api/profile', function index(req, res) {
+  // send all todos as JSON response
+  res.json({ profile: profile });
+});
+
+
+// get all weed shops 
+
+app.get('/api/shops', function(req, res) {
+    
+    db.Shop.find().populate('name')
+    .exec(function(err, shops){
+      if (err) { return console.log("index error: " + err); }
+      res.json(shops);
   });
 });
 
