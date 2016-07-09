@@ -10,15 +10,17 @@ app.use(bodyParser.urlencoded({ extended: true }));
 /************
  * DATABASE *
  ************/
-// var mongoose = require("mongoose");
-// mongoose.connect( process.env.MONGOLAB_URI ||
-//                   process.env.MONGOHQ_URL ||
-//           "mongodb://localhost/personal-api");
+// connect to db models
+var db = require('./models/');
 
-var db = require('./models/shop.js');
-var Shop = require('./models/shop.js');
-  seedShops = require('./seed/shops');
+// generate a new express app and call it 'app'
+var app = express();
 
+// serve static files in public
+app.use(express.static('public'));
+
+// body parser config to accept our datatypes
+app.use(bodyParser.urlencoded({ extended: true }));
 /**********
  * ROUTES *
  **********/
@@ -31,16 +33,17 @@ app.use(express.static('public'));
  * HTML Endpoints
 //  */
 
-app.get('/shops', function homepage(req, res) {
+app.get('/', function (req, res) {
+  res.sendFile('views/index.html' , { root : __dirname});
+});
+
+app.get('/api/shops', function(req, res) {
     
-    Shop.find(function (err, allShops){
-      if (err){
-        res.status(500).json({ error: err.message });
-      } else {
-        res.json({ shops: allShops});
-      }
-    });
-  res.sendFile(__dirname + '/views/index.html');
+    db.Shop.find().populate('name')
+    .exec(function(err, shops){
+      if (err) { return console.log("index error: " + err); }
+      res.json(shops);
+  });
 });
 
 
@@ -53,14 +56,14 @@ app.get('/api', function api_index(req, res) {
   res.json({
     woops_i_has_forgot_to_document_all_my_endpoints: true, // CHANGE ME ;)
     message: "Welcome to my personal api! Here's what you need to know!",
-    documentation_url: "https://github.com/example-username/express_self_api/README.md", // CHANGE ME
-    base_url: "http://YOUR-APP-NAME.herokuapp.com", // CHANGE ME
+    documentation_url: "https://github.com/hockey2249/express-personal-api", // CHANGE ME
+    base_url: "https://immense-springs-36820.herokuapp.com/api", // CHANGE ME
     endpoints: [
       {method: "GET", path: "/api", description: "Describes all available endpoints"},
-      {method: "GET", path: "/api/profile", description: "Data about me"}, // CHANGE ME
-      {method: "POST", path: "/api/campsites", description: "E.g. Create a new campsite"} // CHANGE ME
+      {method: "GET", path: "/api/profile", description: "List to all of the dispensary near you"}, // CHANGE ME
+      {method: "POST", path: "/api/shops", description: "E.g. Create a new campsite"} // CHANGE ME
     ]
-  })
+  });
 });
 
 /**********

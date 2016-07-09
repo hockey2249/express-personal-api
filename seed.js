@@ -1,15 +1,31 @@
-// // This file allows us to seed our application with data
-// // simply run: `node seed.js` from the root of this project folder.
+// This file allows us to seed our application with data
+// simply run: `node seed.js` from the root of this project folder.
 
-// var db = require('./models/shop');
+var db = require('./models');
 
-// var new_campsite = {description: "Sharp rocks. Middle of nowhere."};
+var shop_list = [
+  {
+    name: "The Giving Tree of Denver",
+    address: "2707 W 38th Ave, Denver, CO 80211",
+    website: "tgtree.com",
+    phone: 3034778888,
+  },
+   {
+    name: "Urban Dispensary",
+    address: "2675 W 38th Ave, Denver, CO 80211",
+    website: "urbandispensary.com",
+    phone: 7203899179,
+  }];
 
-// db.Campsite.create(new_campsite, function(err, campsite){
-//   if (err){
-//     return console.log("Error:", err);
-//   }
-
-//   console.log("Created a new Dispensary", campsite._id);
-//   process.exit(); // we're all done! Exit the program.
-// });
+db.Shop.remove({}, function(err, shops){
+	 if(err) {
+	 	console.log('Error occurred in remove', err);
+	 } else {
+		 console.log('removed shop');
+	 	db.Shop.create(shop_list, function(err, shops){
+	if (err) { return console.log('err', err); }
+		console.log("created", shop.length, "shops");
+		process.exit();
+	});
+	}
+});
