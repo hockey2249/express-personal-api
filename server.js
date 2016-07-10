@@ -67,9 +67,9 @@ app.get('/api', function api_index(req, res) {
       {method: "GET", path: "/api/profile", description: "Data about me"}, 
       {method: "POST", path: "/api/shops", description: "Find a local Dispensary"}, 
 
-      {method: "POST", path: "/api/shops", description: "Add 90s One Hit Wonders"},
-      {method: "GET", path: "/api/shops/:id", description: "Get one song"},
-      {method: "DELETE", path: "/api/shops/:id", description: "Delete one song"}
+      {method: "POST", path: "/api/shops", description: "Add a new favorite Dispensary"},
+      {method: "GET", path: "/api/shops/:id", description: "Find One Dispensary"},
+      {method: "DELETE", path: "/api/shops/:id", description: "Delete Search for local Dispensaries"}
     ]
   });
 });
@@ -82,7 +82,7 @@ app.get('/api/profile', function index(req, res) {
 });
 
 
-// get all weed shops 
+// get all Dispensary shops 
 
 app.get('/api/shops', function(req, res) {
    db.Shop.find(function(err, shops){
@@ -91,6 +91,34 @@ app.get('/api/shops', function(req, res) {
   });
 });
 
+//find your Dispensary shop
+app.get('/api/shops/:id', function (req, res) {
+  db.Shop.findOne({_id: req.params.id }, function(err, data) {
+    res.json(data);
+  });
+});
+
+
+// create new favorite shop
+app.post('/api/shops', function (req, res) {
+  var newShop = new db.Shop(req.body);
+  newShop.save(function saveShop(err, savedShop) {
+    if (err) {
+      console.log(err);
+    }
+    else {
+      res.json(savedShop);
+    }
+  });
+});
+
+// delete new shop
+app.delete('/api/shops/:id', function (req, res) {
+  var shopId = req.params.id;
+  db.Shop.findOneAndRemove({ _id: shopId }, function (err, deletedShop) {
+    res.json(deletedShop);
+  });
+});
 
 
 /**********
