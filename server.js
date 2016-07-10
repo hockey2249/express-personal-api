@@ -2,6 +2,8 @@
 var express = require('express'),
     app = express();
 
+
+
 // parse incoming urlencoded form data
 // and populate the req.body object
 var bodyParser = require('body-parser');
@@ -57,7 +59,8 @@ app.get('/', function (req, res) {
 
 app.get('/api', function api_index(req, res) {
   // TODO: Document all your api endpoints below
-  res.json({
+  
+res.json({
     woops_i_has_forgot_to_document_all_my_endpoints: true, // CHANGE ME ;)
     message: "Welcome to my personal api! Here's what you need to know!",
     documentation_url: "https://github.com/hockey2249/express-personal-api", 
@@ -65,8 +68,6 @@ app.get('/api', function api_index(req, res) {
     endpoints: [
       {method: "GET", path: "/api", description: "Describes all available endpoints"},
       {method: "GET", path: "/api/profile", description: "Data about me"}, 
-      {method: "POST", path: "/api/shops", description: "Find a local Dispensary"}, 
-
       {method: "POST", path: "/api/shops", description: "Add a new favorite Dispensary"},
       {method: "GET", path: "/api/shops/:id", description: "Find One Dispensary"},
       {method: "DELETE", path: "/api/shops/:id", description: "Delete Search for local Dispensaries"}

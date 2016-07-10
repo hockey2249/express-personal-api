@@ -15,6 +15,30 @@ var shop_list = [
     address: "2675 W 38th Ave, Denver, CO 80211",
     website: "urbandispensary.com",
     phone: 7203899179,
+  },
+  {
+    name: "The Giving Tree of Denver",
+    address: "2707 W 38th Ave, Denver, CO 80211",
+    website: "tgtree.com",
+    phone: 3034778888,
+  },
+   {
+    name: "Urban Dispensary",
+    address: "2675 W 38th Ave, Denver, CO 80211",
+    website: "urbandispensary.com",
+    phone: 7203899179,
+  },
+    {
+    name: "The Giving Tree of Denver",
+    address: "2707 W 38th Ave, Denver, CO 80211",
+    website: "tgtree.com",
+    phone: 3034778888,
+  },
+   {
+    name: "Urban Dispensary",
+    address: "2675 W 38th Ave, Denver, CO 80211",
+    website: "urbandispensary.com",
+    phone: 7203899179,
   }];
 
 db.Shop.remove({}, function(err, shops){
@@ -24,7 +48,7 @@ db.Shop.remove({}, function(err, shops){
 		 console.log('removed shop');
 	 	db.Shop.create(shop_list, function(err, shops){
 	if (err) { return console.log('err', err); }
-		console.log("created", shop.length, "shops");
+		console.log("created", db.Shop.length, "shops");
 		process.exit();
 	});
 	}
