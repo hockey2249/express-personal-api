@@ -103,20 +103,14 @@ app.post('/api/shops', function (req, res) {
 
 //Update a Shop
 
-app.put('/api/shops/:id', function(req, res) {
-
-  Shop.findById(req.params.shop_id, function(err, shop) {
-    if (err)
-      res.send(err);
-      shop.name = req.body.name;  // updating the shop 
-    
-    shop.save(function(err) {
-      if (err)
-      res.send(err);
-            });
+app.put('/api/shops/:id', function (req, res) {
+  var shopID = req.params.id;
+  var update = req.body;
+  db.Shop.findOneAndUpdate({_id: shopID}, update, function(err, shop){
+    if (err) { return console.log("create error: " + err); }
     res.json(shop);
-        });
-    });
+  });
+});
 
 // delete new shop
 app.delete('/api/shops/:id', function (req, res) {
