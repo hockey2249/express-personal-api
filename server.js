@@ -2,8 +2,6 @@
 var express = require('express'),
     app = express();
 
-
-
 // parse incoming urlencoded form data
 // and populate the req.body object
 var bodyParser = require('body-parser');
@@ -19,23 +17,6 @@ app.use(function(req, res, next) {
  ************/
 
 var db = require('./models/'); 
-
-var profile = [
-  {
-  name: 'Kyle Gibons',
-  github_link: 'https://github.com/hockey2249/express-personal-api',
-  github_profile_image: '',
-  current_city: 'Denver, CO',
-  pets: [
-    {name: 'Simba', type: 'Dog', breed: 'Golden Retriver'},
- ],
-  family_members: [
-      {name: 'Kayla', relationship: 'Sister'},
-      {name: 'James', relationship: 'Dad'},
-      {name: 'Kathy', relationship: 'Mother'}
-]
-}
-];
 
 /**********
  * ROUTES *
@@ -58,10 +39,8 @@ app.get('/', function (req, res) {
  */
 
 app.get('/api', function api_index(req, res) {
-  // TODO: Document all your api endpoints below
-  
+
 res.json({
-    woops_i_has_forgot_to_document_all_my_endpoints: true, // CHANGE ME ;)
     message: "Welcome to my personal api! Here's what you need to know!",
     documentation_url: "https://github.com/hockey2249/express-personal-api", 
     base_url: "https://immense-springs-36820.herokuapp.com/api", 
@@ -77,9 +56,15 @@ res.json({
 
 
 //get all profile info
-app.get('/api/profile', function index(req, res) {
-  // send all todos as JSON response
-  res.json({ profile: profile });
+// app.get('/api/profile', function index(req, res) {
+//   res.json({ profile: profile });
+// });
+
+app.get('/api/profile', function(req, res) {
+   db.Profile.find(function(err, profile){
+      if (err) { return console.log("index error: " + err); }
+      res.json(profile);
+  });
 });
 
 
@@ -102,7 +87,12 @@ app.get('/api/shops/:id', function (req, res) {
 
 // create new favorite shop
 app.post('/api/shops', function (req, res) {
-  var newShop = new db.Shop(req.body);
+  var newShop = new db.Shop({
+  name: req.body.name,
+  address: req.body.address,
+  website: req.body.website,
+  phone: req.body.phone,
+  });
   newShop.save(function saveShop(err, savedShop) {
     if (err) {
       console.log(err);
@@ -120,7 +110,6 @@ app.delete('/api/shops/:id', function (req, res) {
     res.json(deletedShop);
   });
 });
-
 
 /**********
  * SERVER *
