@@ -6,11 +6,6 @@ var express = require('express'),
 // and populate the req.body object
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(function(req, res, next) {
-     res.header("Access-Control-Allow-Origin", "*");
-     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-     next();
- });
 
 /************
  * DATABASE *
@@ -47,8 +42,11 @@ res.json({
     endpoints: [
       {method: "GET", path: "/api", description: "Describes all available endpoints"},
       {method: "GET", path: "/api/profile", description: "Data about me"}, 
-      {method: "POST", path: "/api/shops", description: "Add a new favorite Dispensary"},
       {method: "GET", path: "/api/shops/:id", description: "Find One Dispensary"},
+      
+      {method: "POST", path: "/api/shops", description: "Add a new favorite Dispensary"},
+      {method: "PUT", path: "/api/shops/:id", description: "Update One of Your Dispensary"},
+      
       {method: "DELETE", path: "/api/shops/:id", description: "Delete Search for local Dispensaries"}
     ]
   });
@@ -103,6 +101,23 @@ app.post('/api/shops', function (req, res) {
   });
 });
 
+//Update a Shop
+
+app.put('/api/shops/:id', function(req, res) {
+
+  Shop.findById(req.params.shop_id, function(err, shop) {
+    if (err)
+      res.send(err);
+      shop.name = req.body.name;  // updating the shop 
+    
+    shop.save(function(err) {
+      if (err)
+      res.send(err);
+            });
+    res.json(shop);
+        });
+    });
+
 // delete new shop
 app.delete('/api/shops/:id', function (req, res) {
   var shopId = req.params.id;
@@ -110,6 +125,7 @@ app.delete('/api/shops/:id', function (req, res) {
     res.json(deletedShop);
   });
 });
+
 
 /**********
  * SERVER *
