@@ -5,6 +5,8 @@ var express = require('express'),
 // parse incoming urlencoded form data
 // and populate the req.body object
 var bodyParser = require('body-parser');
+
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 /************
@@ -46,7 +48,6 @@ res.json({
       
       {method: "POST", path: "/api/shops", description: "Add a new favorite Dispensary"},
       {method: "PUT", path: "/api/shops/:id", description: "Update One of Your Dispensary"},
-      
       {method: "DELETE", path: "/api/shops/:id", description: "Delete Search for local Dispensaries"}
     ]
   });
@@ -85,28 +86,23 @@ app.get('/api/shops/:id', function (req, res) {
 
 // create new favorite shop
 app.post('/api/shops', function (req, res) {
-  var newShop = new db.Shop({
-  name: req.body.name,
-  address: req.body.address,
-  website: req.body.website,
-  phone: req.body.phone,
-  });
-  newShop.save(function saveShop(err, savedShop) {
-    if (err) {
-      console.log(err);
+  var newShop = req.body;
+  console.log(newShop);
+
+db.Shop.create(newShop, function(err, shop){
+    if (err){
+      res.send("Error " + err);
     }
-    else {
-      res.json(savedShop);
-    }
+    res.json(shop);
   });
 });
 
 //Update a Shop
 
-app.put('/api/shops/:id', function (req, res) {
-  var shopID = req.params.id;
+app.put('/api/shops/:id', function update(req, res) {
+  var updateID = req.params.id;
   var update = req.body;
-  db.Shop.findOneAndUpdate({_id: shopID}, update, function(err, shop){
+  db.Shop.findOneAndUpdate({_id: updateID}, update, function(err, shop){
     if (err) { return console.log("create error: " + err); }
     res.json(shop);
   });
