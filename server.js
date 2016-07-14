@@ -53,12 +53,6 @@ res.json({
   });
 });
 
-
-//get all profile info
-// app.get('/api/profile', function index(req, res) {
-//   res.json({ profile: profile });
-// });
-
 app.get('/api/profile', function(req, res) {
    db.Profile.find(function(err, profile){
       if (err) { return console.log("index error: " + err); }
